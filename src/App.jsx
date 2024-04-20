@@ -5,7 +5,8 @@ import { onAuthStateChanged, signOut } from 'firebase/auth'
 
 import SignIn from './components/SignIn';
 import SignUp from './components/SignUp';
-// import Error404 from './components/Error404';
+import Error404 from './components/Error404';
+import PostFeed from './components/PostFeed';
 
 function App() {
   // State variables to store user information and loading status
@@ -40,6 +41,7 @@ function App() {
               <Route path="/sign-up" element={user ? <Navigate to="/" /> : <SignUp />} />
               {/* Route for sign in page */}
               <Route path="/sign-in" element={user ? <Navigate to="/" /> : <SignIn />} />
+              <Route path='/' element={user ? <PostFeed/> : <Navigate to="/sign-in"/>} />
               {/* Route for 404 error page */}
               <Route path="*" element={<Error404 />} />
             </Routes>
