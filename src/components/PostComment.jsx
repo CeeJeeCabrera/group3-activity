@@ -78,27 +78,27 @@ function PostComment({ user }) {
   };
 
   // Function to upload a file
-  const fileUpload = async (file) => {
-    if (!file) {
-      return;
-    }
+//   const fileUpload = async (file) => {
+//     if (!file) {
+//       return;
+//     }
 
-    const storageRef = ref(storage, `chat/${chatRoomId}/${Date.parse(new Date())}_${file.name}`);
-    const result = await uploadBytes(storageRef, file);
-    console.log('result ', result);
-    const downloadURL = await getDownloadURL(storageRef);
-    console.log('downloadURL', downloadURL);
+//     const storageRef = ref(storage, `chat/${chatRoomId}/${Date.parse(new Date())}_${file.name}`);
+//     const result = await uploadBytes(storageRef, file);
+//     console.log('result ', result);
+//     const downloadURL = await getDownloadURL(storageRef);
+//     console.log('downloadURL', downloadURL);
 
-    // Add a new message with the uploaded image to the chat room
-    await addDoc(listCollection, {
-      message,
-      senderName: user.displayName ?? user.email,
-      senderId: user.uid,
-      chatRoomId: chatRoomId,
-      image: downloadURL,
-      timestamp: serverTimestamp()
-    });
-  };
+//     // Add a new message with the uploaded image to the chat room
+//     await addDoc(listCollection, {
+//       message,
+//       senderName: user.displayName ?? user.email,
+//       senderId: user.uid,
+//       chatRoomId: chatRoomId,
+//       image: downloadURL,
+//       timestamp: serverTimestamp()
+//     });
+//   };
 
   return (
     <>
@@ -122,7 +122,7 @@ function PostComment({ user }) {
         onChange={(e) => setMessage(e.target.value)}
       />
       <button onClick={send}>Send</button>
-      <input type='file' onChange={(e) => fileUpload(e.target.files[0])} />
+      {/* <input type='file' onChange={(e) => fileUpload(e.target.files[0])} /> */}
     </>
   );
 }

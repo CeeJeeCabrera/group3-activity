@@ -5,7 +5,7 @@ import { collection, addDoc, query, orderBy, onSnapshot, serverTimestamp } from 
 import { storage } from '../config/firebase';
 import {ref, uploadBytes, getDownloadURL} from "firebase/storage";
 
-function PostFeed() {
+function PostFeed({user}) {
   const {chatRoomId} = useParams();
   const [list, setList] = useState([]) // State to store the chat room list
   const [title, setTitle] = useState('') // State to store the input field value
