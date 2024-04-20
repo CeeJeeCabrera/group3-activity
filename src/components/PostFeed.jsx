@@ -1,16 +1,21 @@
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { db } from '../config/firebase'
 import { collection, addDoc, query, orderBy, onSnapshot, serverTimestamp } from 'firebase/firestore'
+import { storage } from '../config/firebase';
+import {ref, uploadBytes, getDownloadURL} from "firebase/storage";
 
 function PostFeed() {
+  const {chatRoomId} = useParams();
   const [list, setList] = useState([]) // State to store the chat room list
   const [title, setTitle] = useState('') // State to store the input field value
+  const [message, setMessage] = useState('');
 
   const listCollection = collection(db, 'chat_room') // Reference to the 'chat_room' collection in Firestore
 
   useEffect(() => {
     getList() // Fetch the chat room list on component mount
+    getDocument(chatRoomId)
   }, [])
 
   const getList = async () => {
@@ -45,9 +50,43 @@ function PostFeed() {
     }
   }
 
+  const getDocument = async (documentId) => {
+    try {
+      const docRef = doc(db, 'chat_room', documentId);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        const documentData = { ...docSnap.data(), id: docSnap.id };
+        setTitle(documentData.title);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const fileUpload = async (file) => {
+    if (!file) {
+      return;
+    }
+
+    const storageRef = ref(storage, `chat/${chatRoomId}/${Date.parse(new Date())}_${file.name}`);
+    const result = await uploadBytes(storageRef, file);
+    console.log('result ', result);
+    const downloadURL = await getDownloadURL(storageRef);
+    console.log('downloadURL', downloadURL);
+
+    await addDoc(listCollection, {
+      message,
+      senderName: user.displayName ?? user.email,
+      senderId: user.uid,
+      chatRoomId: chatRoomId,
+      image: downloadURL,
+      timestamp: serverTimestamp()
+    });
+  };
+
   return (
     <>
-      <h1>Chat Room List</h1>
+      <h1>Post Feed</h1>
       <input
         type='text'
         placeholder='Title'
@@ -55,6 +94,9 @@ function PostFeed() {
         onChange={(e) => setTitle(e.target.value)}
       />
       <button onClick={save}>Save</button>
+      
+      <button onClick={save}>Send</button>
+      <input type='file' onChange={(e) => fileUpload(e.target.files[0])} />
       {
         list.map((item, index) => (
           item.timestamp ? <div key={index}>
