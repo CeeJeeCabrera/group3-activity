@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { auth } from '../config/firebase';
+import { auth } from './config/firebase';
 import { onAuthStateChanged, signOut } from 'firebase/auth'
 
-import SignIn from '../components/SignIn';
-import SignUp from '../components/SignUp';
-import Error404 from '../components/Error404';
+import SignIn from './components/SignIn';
+import SignUp from './components/SignUp';
+import Error404 from './components/Error404';
 
 function App() {
   // State variables to store user information and loading status
